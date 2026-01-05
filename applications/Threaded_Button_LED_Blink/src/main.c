@@ -48,23 +48,14 @@ static struct k_thread button_thread_data;
 static struct k_thread led_thread_data;
 
 /*
- * Button config test matrix.
- * Change BUTTON_MODE (0..N-1), rebuild + flash, then press USER.
+ * Locked configuration:
+ * - Internal pull-down to avoid floating
+ * - Active-high (pressed reads 1)
+ *
+ * Note: Zephyr's stm32f4_disco board DTS also defines USER button (PA0) as
+ * GPIO_ACTIVE_HIGH.
  */
-#define BUTTON_MODE 1
-
-struct button_mode {
-	gpio_flags_t flags;
-	bool active_high;
-	const char *name;
-};
-
-static const struct button_mode button_modes[] = {
-	/* Most likely for STM32F4-Discovery B1 on PA0 */
-	{ GPIO_INPUT | GPIO_PULL_UP,   false, "PULL_UP + ACTIVE_LOW" },
-	{ GPIO_INPUT | GPIO_PULL_DOWN, false, "PULL_DOWN + ACTIVE_LOW" },
-	{ GPIO_INPUT,                 false, "NO_PULL + ACTIVE_LOW" },
-};
+#define BUTTON_FLAGS (GPIO_INPUT | GPIO_PULL_DOWN)
 
 static void set_all_leds(int value)
 {
@@ -81,18 +72,17 @@ static void button_thread(void *unused1, void *unused2, void *unused3)
 
 	int last_raw = -1;
 	int last_pressed = -1;
-	const struct button_mode *mode = &button_modes[BUTTON_MODE];
 
 	while (1) {
 		int val = gpio_pin_get_dt(&button);
 		int pressed = 0;
 		if (val >= 0) {
-			pressed = mode->active_high ? (val != 0) : (val == 0);
+			pressed = (val != 0);
 			atomic_set(&button_pressed, pressed);
 		}
 
 		if (val != last_raw || pressed != last_pressed) {
-			printf("BUTTON mode=%s raw=%d pressed=%d\n", mode->name, val, pressed);
+			printf("BUTTON raw=%d pressed=%d\n", val, pressed);
 			last_raw = val;
 			last_pressed = pressed;
 		}
@@ -148,20 +138,15 @@ int main(void)
 		return 0;
 	}
 
-	BUILD_ASSERT(BUTTON_MODE >= 0 && BUTTON_MODE < ARRAY_SIZE(button_modes),
-		     "Invalid BUTTON_MODE");
-
-	const struct button_mode *mode = &button_modes[BUTTON_MODE];
-	ret = gpio_pin_configure_dt(&button, mode->flags);
+	ret = gpio_pin_configure_dt(&button, BUTTON_FLAGS);
 	if (ret < 0) {
-		printf("Failed to configure button %s (err %d)\n", mode->name, ret);
+		printf("Failed to configure button (err %d)\n", ret);
 		return 0;
 	}
 
-	printf("Button on %s pin %u configured: %s (dt_flags=0x%x)\n",
+	printf("Button on %s pin %u configured: PULL_DOWN + ACTIVE_HIGH (dt_flags=0x%x)\n",
 	       button.port->name,
 	       (unsigned)button.pin,
-	       mode->name,
 	       (unsigned)button.dt_flags);
 
 	atomic_set(&button_pressed, 0);
