@@ -56,6 +56,42 @@ CONFIG_STDOUT_CONSOLE=y
 
 ## Environment Setup
 
+## Host Tools (one-time)
+
+Make sure these host tools are available before building:
+
+- `python3` + `pip3`
+- `cmake`
+- `dtc` (device tree compiler)
+- One build tool: `ninja` (recommended) and/or GNU `make`
+- `git` (needed for `west update`)
+- `openocd` (needed for flashing with OpenOCD)
+- `minicom` (used by `make monitor`)
+
+Install them using your distro’s package manager (example for Debian/Ubuntu):
+
+```sh
+sudo apt update
+sudo apt install -y python3 python3-pip cmake ninja-build device-tree-compiler make git openocd minicom
+```
+
+## Python Requirements (one-time)
+
+Install the Python dependencies (including `west`) before building:
+
+```sh
+python3 -m pip install -U pip
+pip3 install --user -r requirements.txt
+```
+
+## west Update (recommended)
+
+If this workspace is missing modules (or you want to sync to the manifest revisions), run:
+
+```sh
+west update
+```
+
 In a new shell, source Zephyr’s environment script before building/flashing:
 
 ```sh
@@ -105,7 +141,6 @@ Key variables:
 - `METHOD`: for `make build`, use `west|cmake-ninja|cmake-make`; for `make flash`, use `west|openocd`
 - `BUILD_METHOD`: optional explicit build method (same options as above)
 - `FLASH_METHOD`: optional explicit flash method (`west|openocd`)
-- `COMPORT`: serial port device (e.g. `/dev/ttyACM0`). If not set, the Makefile tries to auto-detect.
 - `COMPORT`: serial port device (default `/dev/ttyUSB0`)
 - `BAUD`: serial baud rate (default `115200`)
 

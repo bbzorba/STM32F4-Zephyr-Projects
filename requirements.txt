@@ -1,0 +1,9 @@
+# Python requirements for building Zephyr applications in this workspace.
+#
+# This follows the Zephyr "Getting Started" documentation, which installs:
+#   pip3 install -r zephyr/scripts/requirements.txt
+#
+# We keep a top-level file so users can run one command at the repo root.
+# Note: this already includes `west` and the other Zephyr Python dependencies.
+
+-r zephyr/scripts/requirements.txt
