@@ -1,2 +1,0 @@
-ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ar qc liblib__posix__c_lib_ext.a CMakeFiles/lib__posix__c_lib_ext.dir/fnmatch.c.obj CMakeFiles/lib__posix__c_lib_ext.dir/getentropy.c.obj CMakeFiles/lib__posix__c_lib_ext.dir/getopt_shim.c.obj
-ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ranlib liblib__posix__c_lib_ext.a
