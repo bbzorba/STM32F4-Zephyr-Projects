@@ -1,0 +1,2 @@
+ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ar qc liblib__libc__common.a CMakeFiles/lib__libc__common.dir/source/stdlib/abort.c.obj CMakeFiles/lib__libc__common.dir/source/time/time.c.obj CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
+ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ranlib liblib__libc__common.a

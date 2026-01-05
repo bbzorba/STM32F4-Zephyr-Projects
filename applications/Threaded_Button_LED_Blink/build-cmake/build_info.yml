@@ -1,0 +1,54 @@
+cmake:
+  application:
+    configuration-dir: '/home/bbzorba/zephyrproject/applications/Threaded_Button_LED_Blink'
+    source-dir: '/home/bbzorba/zephyrproject/applications/Threaded_Button_LED_Blink'
+  board:
+    name: 'stm32f4_disco'
+    path:
+     - '/home/bbzorba/zephyrproject/zephyr/boards/st/stm32f4_disco'
+    qualifiers: 'stm32f407xx'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/home/bbzorba/zephyrproject/zephyr/dts/bindings'
+    files:
+     - '/home/bbzorba/zephyrproject/zephyr/boards/st/stm32f4_disco/stm32f4_disco.dts'
+    include-dirs:
+     - '/home/bbzorba/zephyrproject/modules/hal/ambiq/dts'
+     - '/home/bbzorba/zephyrproject/modules/hal/atmel/include'
+     - '/home/bbzorba/zephyrproject/modules/hal/bouffalolab/include'
+     - '/home/bbzorba/zephyrproject/modules/hal/bouffalolab/include/zephyr'
+     - '/home/bbzorba/zephyrproject/modules/hal/gigadevice/include'
+     - '/home/bbzorba/zephyrproject/modules/hal/microchip/include'
+     - '/home/bbzorba/zephyrproject/modules/hal/microchip/dts'
+     - '/home/bbzorba/zephyrproject/modules/hal/nuvoton/dts'
+     - '/home/bbzorba/zephyrproject/modules/hal/nxp/dts'
+     - '/home/bbzorba/zephyrproject/modules/hal/stm32/dts'
+     - '/home/bbzorba/zephyrproject/modules/hal/ti/dts'
+     - '/home/bbzorba/zephyrproject/zephyr/include'
+     - '/home/bbzorba/zephyrproject/zephyr/include/zephyr'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/common'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/vendor'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/rx'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/x86'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/xtensa'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/sparc'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/riscv'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/posix'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/arm64'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/arm'
+     - '/home/bbzorba/zephyrproject/zephyr/dts/arc'
+     - '/home/bbzorba/zephyrproject/zephyr/dts'
+  kconfig:
+    files:
+     - '/home/bbzorba/zephyrproject/zephyr/boards/st/stm32f4_disco/stm32f4_disco_defconfig'
+     - '/home/bbzorba/zephyrproject/applications/Threaded_Button_LED_Blink/prj.conf'
+    user-files:
+     - '/home/bbzorba/zephyrproject/applications/Threaded_Button_LED_Blink/prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: '/home/bbzorba/zephyr-sdk-0.16.5'
+  zephyr:
+    version: '4.3.99'
+    zephyr-base: '/home/bbzorba/zephyrproject/zephyr'
+version: '0.1.0'

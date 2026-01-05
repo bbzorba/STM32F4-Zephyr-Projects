@@ -1,0 +1,2 @@
+ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ar qc liblib__libc__picolibc.a CMakeFiles/lib__libc__picolibc.dir/assert.c.obj CMakeFiles/lib__libc__picolibc.dir/cbprintf.c.obj CMakeFiles/lib__libc__picolibc.dir/chk_fail.c.obj CMakeFiles/lib__libc__picolibc.dir/errno_wrap.c.obj CMakeFiles/lib__libc__picolibc.dir/exit.c.obj CMakeFiles/lib__libc__picolibc.dir/locks.c.obj CMakeFiles/lib__libc__picolibc.dir/stdio.c.obj
+ccache /home/bbzorba/zephyr-sdk-0.16.5/arm-zephyr-eabi/bin/arm-zephyr-eabi-ranlib liblib__libc__picolibc.a
