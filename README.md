@@ -69,13 +69,6 @@ cd dev/LED_Blink
 west build -b stm32f4_disco . -- -DDTC=/usr/bin/dtc
 ```
 
-If you change board overlays/Kconfig/build settings and want a clean reconfigure:
-
-```sh
-west build -t pristine
-west build -b stm32f4_disco . -- -DDTC=/usr/bin/dtc
-```
-
 ## Flash
 
 For STM32F4 Disco in this setup, use the OpenOCD runner:
