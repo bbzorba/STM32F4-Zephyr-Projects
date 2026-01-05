@@ -1,6 +1,6 @@
 SHELL := bash
 .ONESHELL:
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := build
 
 # Root build/flash entrypoint for this Zephyr workspace.
 #
