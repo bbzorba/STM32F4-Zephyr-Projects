@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/home/bbzorba/zephyrproject/zephyr"
+    "cmake.sourceDirectory": "/home/bbzorba/zephyrproject/zephyr",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/applications/LIS302_accel_test/build/compile_commands.json"
 }
