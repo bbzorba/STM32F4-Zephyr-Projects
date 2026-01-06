@@ -13,11 +13,12 @@ SHELL := bash
 #   METHOD=cmake-make
 #
 # Choose how to flash with FLASH_METHOD:
-#   FLASH_METHOD=west     (default)
-#   FLASH_METHOD=openocd  (direct OpenOCD, no west)
+#   FLASH_METHOD=openocd  (default)
+#   FLASH_METHOD=west     (west flash runner)
 
 #COMPILE_DIR ?= applications/Threaded_Button_LED_Blink
-COMPILE_DIR ?= applications/LIS302_accel_test
+COMPILE_DIR ?= applications/Interrupt_Button_LED_Blink
+#COMPILE_DIR ?= applications/LIS302_accel_test
 BOARD ?= stm32f4_disco
 
 # Preferred interface:
@@ -35,6 +36,13 @@ DTC ?= /usr/bin/dtc
 OPENOCD ?= /usr/bin/openocd
 OPENOCD_DEFAULT_PATH ?= /usr/share/openocd/scripts
 OPENOCD_BOARD_CFG ?= board/stm32f4discovery.cfg
+
+# For stm32f4_disco we prefer Zephyr's board OpenOCD config, and use
+# connect-under-reset + low SWD speed for reliable attach.
+OPENOCD_SUPPORT_PATH ?= zephyr/boards/st/stm32f4_disco/support
+OPENOCD_CFG ?= $(OPENOCD_SUPPORT_PATH)/openocd.cfg
+OPENOCD_ADAPTER_SPEED_KHZ ?= 100
+OPENOCD_RESET_CONFIG ?= reset_config srst_only srst_nogate connect_assert_srst
 
 # west build options
 PRISTINE ?= 0
@@ -71,12 +79,12 @@ else
 	endif
 endif
 
-# Defaults (treat unset/empty as west)
+# Defaults
 ifeq ($(strip $(BUILD_METHOD)),)
 BUILD_METHOD := west
 endif
 ifeq ($(strip $(FLASH_METHOD)),)
-FLASH_METHOD := west
+FLASH_METHOD := openocd
 endif
 
 ifeq ($(BUILD_METHOD),west)
@@ -171,7 +179,17 @@ flash: _env
 		echo "Hint: run 'make build ...' first, or set BUILD_DIR=..." >&2
 		exit 2
 	fi
-	"$(OPENOCD)" -s "$(OPENOCD_DEFAULT_PATH)" -f "$(OPENOCD_BOARD_CFG)" -c "program $$elf verify reset exit"
+	"$(OPENOCD)" \
+		-s "$(OPENOCD_SUPPORT_PATH)" \
+		-s "$(OPENOCD_DEFAULT_PATH)" \
+		-f "$(OPENOCD_CFG)" \
+		-c "$(OPENOCD_RESET_CONFIG)" \
+		-c "adapter speed $(OPENOCD_ADAPTER_SPEED_KHZ)" \
+		-c init \
+		-c targets \
+		-c "reset halt" \
+		-c "program $$elf verify" \
+		-c shutdown
 
 .PHONY: build-flash
 build-flash: build flash
