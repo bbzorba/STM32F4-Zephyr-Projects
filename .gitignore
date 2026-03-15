@@ -2,3 +2,12 @@ build/
 build-*/
 build-cmake/
 build-cmake-make/
+
+# Python virtual environment (OS-specific, never commit)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# West workspace state (auto-generated, never commit)
+.west/
