@@ -12,4 +12,4 @@ manifest:
       import: true
 
   self:
-    path: STM32F4-Zephyr-Projects
+    path: .

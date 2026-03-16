@@ -5,5 +5,8 @@
         "PATH": "C:\\Program Files\\Git\\cmd;${env:PATH}"
     },
     "terminal.integrated.defaultProfile.windows": "Zephyr IDE Terminal",
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "kconfig.zephyr.board": {
+        "F:/dev/STM32/Zephyr_Workspace": "stm32f4_disco"
+    }
 }

@@ -78,7 +78,6 @@ int lis_spi_setup(struct spi_dt_spec *spi_out)
 	const struct spi_cs_control cs_ctrl = {
 		.gpio = cs_gpio,
 		.delay = 5,
-		.cs_is_gpio = true,
 	};
 
 	/* Conservative SPI settings for reliability. */
