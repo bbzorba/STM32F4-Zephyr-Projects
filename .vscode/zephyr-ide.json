@@ -3,7 +3,28 @@
     "Intr_Btn_LED_Blink": {
       "rel_path": "applications/Intr_Btn_LED_Blink",
       "name": "Intr_Btn_LED_Blink",
-      "buildConfigs": {},
+      "buildConfigs": {
+        "build/stm32f4_disco": {
+          "relBoardSubDir": "st/stm32f4_disco",
+          "board": "stm32f4_disco",
+          "name": "build/stm32f4_disco",
+          "westBuildArgs": "",
+          "westBuildCMakeArgs": " -DCONFIG_DEBUG_OPTIMIZATIONS=y -DCONFIG_DEBUG_THREAD_INFO=y ",
+          "confFiles": {
+            "config": [],
+            "extraConfig": [],
+            "overlay": [],
+            "extraOverlay": []
+          },
+          "runnerConfigs": {
+            "openocd": {
+              "runner": "openocd",
+              "name": "openocd",
+              "args": ""
+            }
+          }
+        }
+      },
       "twisterConfigs": {},
       "confFiles": {
         "config": [],
