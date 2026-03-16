@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "Intr_Btn_LED_Blink": {
+      "rel_path": "applications/Intr_Btn_LED_Blink",
+      "name": "Intr_Btn_LED_Blink",
+      "buildConfigs": {},
+      "twisterConfigs": {},
+      "confFiles": {
+        "config": [],
+        "extraConfig": [],
+        "overlay": [],
+        "extraOverlay": []
+      }
+    }
+  }
+}
