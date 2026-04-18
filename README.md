@@ -1,40 +1,30 @@
+# STM32F4 Zephyr Workspace
 
-# Zephyr Workspace Notes
+Zephyr RTOS workspace for the STM32F4 Discovery board.
 
-This repository is a Zephyr workspace checkout.
+## Project Structure
 
-## Development Projects Folder
-
-Local application projects live under:
-
-- `dev/`
-
-Some apps in this workspace also live under:
-
-- `applications/`
-
-Examples in this workspace:
-
-- `dev/LED_Blink/`
-- `dev/LIS302_accel_test/`
-
-Each app folder is a normal Zephyr “application” with its own `CMakeLists.txt`, `prj.conf`, and `src/`.
-
-## Create A New Project (Application)
-
-Create a new folder under `dev/` with (minimum) this structure:
+All user applications live under `applications/`:
 
 ```
-dev/MyApp/
-	CMakeLists.txt
-	prj.conf
-	src/
-		main.c
+applications/
+├── Intr_Btn_LED_Blink/
+├── Intr_Btn_LED_Blink_pressed/
+├── LIS302_accel_test/
+└── Threaded_Button_LED_Blink/
 ```
 
-Optional (board/peripheral config):
+Each app has a standard structure:
 
-- `app.overlay` (devicetree overlay)
+```
+applications/MyApp/
+├── CMakeLists.txt
+├── prj.conf
+└── src/
+    └── main.c
+```
+
+Optional: `app.overlay` (devicetree overlay for board/peripheral config).
 
 ### Minimal `CMakeLists.txt`
 
@@ -42,167 +32,93 @@ Optional (board/peripheral config):
 cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(myapp)
-
 target_sources(app PRIVATE src/main.c)
 ```
 
 ### Minimal `prj.conf`
 
-Enable what your app uses (example for console print):
-
 ```
 CONFIG_STDOUT_CONSOLE=y
 ```
 
-## Environment Setup
+## Environment Setup (one-time)
 
-## Host Tools (one-time)
+### Host Tools
 
-Make sure these host tools are available before building:
-
-- `python3` + `pip3`
+- `python3` + `pip`
 - `cmake`
-- `dtc` (device tree compiler)
-- One build tool: `ninja` (recommended) and/or GNU `make`
-- `git` (needed for `west update`)
-- `openocd` (needed for flashing with OpenOCD)
-- `minicom` (used by `make monitor`)
+- `ninja` (recommended build tool)
+- `git`
+- `openocd` (for flashing)
 
-Install them using your distro’s package manager (example for Debian/Ubuntu):
-
+**Linux/macOS:**
 ```sh
-sudo apt update
-sudo apt install -y python3 python3-pip cmake ninja-build device-tree-compiler make git openocd minicom
+sudo apt install -y python3 python3-pip cmake ninja-build git openocd
 ```
 
-## Python Requirements (one-time)
+**Windows:** Install [Python](https://python.org), [CMake](https://cmake.org), [Ninja](https://ninja-build.org), [Git](https://git-scm.com), [OpenOCD](https://openocd.org). The Zephyr SDK provides the ARM toolchain automatically.
 
-Install the Python dependencies (including `west`) before building:
+### Python Virtual Environment
 
 ```sh
-python3 -m pip install -U pip
-pip3 install --user -r requirements.txt
+python -m venv .venv
+
+# Linux/macOS
+source .venv/bin/activate
+
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt
 ```
 
-## west Update (recommended)
+### Zephyr SDK (Toolchain)
 
-If this workspace is missing modules (or you want to sync to the manifest revisions), run:
+Download and install the [Zephyr SDK](https://docs.zephyrproject.org/latest/develop/toolchains/zephyr_sdk.html). The build system auto-detects it.
+
+### West Modules (first time or after manifest changes)
 
 ```sh
 west update
 ```
 
-In a new shell, source Zephyr’s environment script before building/flashing:
+## Build & Flash
+
+The application to build is selected via `COMPILE_DIR` at the top of the `Makefile`.
+Change that line to switch the default, or override it on the command line.
+
+### Build
 
 ```sh
-source zephyr/zephyr-env.sh
+make
+make build
+
+# Override application or board:
+make build COMPILE_DIR=applications/Threaded_Button_LED_Blink
+make build COMPILE_DIR=applications/LIS302_accel_test BOARD=stm32f4_disco
 ```
 
-This sets `ZEPHYR_BASE` and also prefers the system `openocd` when the Zephyr SDK-bundled one cannot execute on the host.
+### Flash
 
-## One Makefile To Rule Them All
-
-There is a root `Makefile` that can build/flash any app by setting `COMPILE_DIR`.
-
-Examples:
+Connect the STM32F4 Discovery board via USB (ST-LINK), then:
 
 ```sh
-# Build + flash via west (default)
-make build-flash COMPILE_DIR=applications/Threaded_Button_LED_Blink
+make flash
 
-# Build options
-make build METHOD=west
-make build METHOD=cmake-make
-make build METHOD=cmake-ninja
-
-# Force a pristine rebuild with west
-make build-flash COMPILE_DIR=applications/Threaded_Button_LED_Blink PRISTINE=1
-
-# Flash options
-make flash METHOD=west
-make flash METHOD=openocd
-
-# Monitor serial output (UART over USB)
-make monitor COMPORT=/dev/ttyUSB0
-
-# Flash then automatically open the serial monitor (auto-detects COMPORT if not set)
-make flashmonitor-auto
+# Flash a specific application:
+make flash COMPILE_DIR=applications/Threaded_Button_LED_Blink
 ```
 
-Defaults:
-
-- If you do not specify `METHOD`, `BUILD_METHOD`, or `FLASH_METHOD`, then `make build` and `make flash` both use `west`.
-- `make build-flash` also defaults to `west` for both build and flash.
-
-Key variables:
-
-- `COMPILE_DIR`: which app to build
-- `BOARD`: which Zephyr board to target (default: `stm32f4_disco`)
-- `METHOD`: for `make build`, use `west|cmake-ninja|cmake-make`; for `make flash`, use `west|openocd`
-- `BUILD_METHOD`: optional explicit build method (same options as above)
-- `FLASH_METHOD`: optional explicit flash method (`west|openocd`)
-- `COMPORT`: serial port device (default `/dev/ttyUSB0`)
-- `BAUD`: serial baud rate (default `115200`)
-
-Note: if you build with `METHOD=cmake-make` (or `cmake-ninja`) and want to flash that output, run:
+### Build and Flash in One Step
 
 ```sh
-make flash METHOD=openocd BUILD_METHOD=cmake-make
+make build-flash
+make build-flash COMPILE_DIR=applications/Intr_Btn_LED_Blink_pressed
 ```
 
-## Build (Compile)
-
-From your app directory (example uses `stm32f4_disco`):
+### Clean Build Directory
 
 ```sh
-cd dev/LED_Blink
-west build -b stm32f4_disco . -- -DDTC=/usr/bin/dtc
+make clean
+make clean COMPILE_DIR=applications/LIS302_accel_test
 ```
-
-## Build Without `west` (Plain CMake)
-
-You can configure and build a Zephyr application with plain CMake.
-
-Important: in this workspace, force system `dtc` (`/usr/bin/dtc`) because the Zephyr-SDK bundled host `dtc` may not be runnable on this machine.
-
-### Ninja
-
-```sh
-source zephyr/zephyr-env.sh
-cmake -S ./applications/Threaded_Button_LED_Blink -B ./build-ninja -GNinja -DBOARD=stm32f4_disco -DDTC=/usr/bin/dtc
-cmake --build ./build-ninja
-```
-
-### GNU Make
-
-```sh
-source zephyr/zephyr-env.sh
-cmake -S ./applications/Threaded_Button_LED_Blink -B ./build-make -G "Unix Makefiles" -DBOARD=stm32f4_disco -DDTC=/usr/bin/dtc
-cmake --build ./build-make
-```
-
-## Flash
-
-For STM32F4 Disco in this setup, use the OpenOCD runner:
-
-```sh
-cd dev/LED_Blink
-west flash --runner openocd
-```
-
-## Flash Without `west` (OpenOCD Direct)
-
-Use the root Makefile:
-
-```sh
-# Flash the currently selected build output with OpenOCD directly (no west)
-make flash METHOD=openocd
-
-# If you built with cmake-make and want to ensure the build dir matches:
-make flash METHOD=openocd BUILD_METHOD=cmake-make
-```
-
-Notes:
-
-- `west flash` without `--runner openocd` may default to `stm32cubeprogrammer` on this board; that requires STM32CubeProgrammer (`STM32_Programmer_CLI`) to be installed and on `PATH`.
-
