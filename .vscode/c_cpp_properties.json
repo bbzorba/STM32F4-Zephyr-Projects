@@ -2,9 +2,9 @@
   "version": 4,
   "configurations": [
     {
-      "name": "windows-gcc-x86",
-      "intelliSenseMode": "windows-gcc-x86",
-      "compilerPath": "F:/MinGW/bin/gcc.exe",
+      "name": "Zephyr",
+      "intelliSenseMode": "gcc-arm",
+      "compilerPath": "",
       "cStandard": "${default}",
       "cppStandard": "${default}",
       "includePath": [
@@ -13,7 +13,7 @@
       "defines": [
         "__ZEPHYR__=1"
       ],
-      "compileCommands": "${workspaceFolder}/applications/LIS302_accel_test/build/compile_commands.json"
+      "compileCommands": "${config:C_Cpp.default.compileCommands}"
     }
   ]
 }

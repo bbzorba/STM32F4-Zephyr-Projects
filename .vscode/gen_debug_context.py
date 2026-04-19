@@ -27,6 +27,8 @@ _BLOCK_END   = '    // ───────────────────
 # ── Board → GDB architecture mapping ─────────────────────────────────────────
 def _board_to_gdb_arch(board: str) -> str:
     b = board.lower()
+    # Strip soc qualifier for matching (e.g. "nrf52840dk/nrf52840" → "nrf52840dk")
+    b_base = b.split('/')[0]
     if any(x in b for x in ['esp32c3', 'esp32h2', 'esp32c6', 'esp32c2']):
         return 'riscv32-espressif_esp_zephyr-elf'
     if 'esp32s2' in b:
@@ -35,7 +37,7 @@ def _board_to_gdb_arch(board: str) -> str:
         return 'xtensa-espressif_esp32s3_zephyr-elf'
     if 'esp32' in b:
         return 'xtensa-espressif_esp32_zephyr-elf'
-    if any(x in b for x in ['hifive', 'riscv', 'rv32', 'rv64', 'vexriscv', 'litex']):
+    if any(x in b_base for x in ['hifive', 'riscv', 'rv32', 'rv64', 'vexriscv', 'litex']):
         return 'riscv64-zephyr-elf'
     # Default: ARM Cortex-M (STM32, nRF, LPC, SAM, i.MX, …)
     return 'arm-zephyr-eabi'
@@ -59,11 +61,15 @@ def _find_openocd_cfg(ws: Path, board: str):
     Scan zephyr/boards/ for an openocd.cfg whose directory path contains
     the board name.  Returns the path relative to  zephyr/boards/  using
     forward slashes, e.g.  "st/stm32f4_disco/support/openocd.cfg".
+
+    Handles Zephyr 3.7+ board/soc naming (e.g. "nrf52840dk/nrf52840") by
+    trying the first segment as the board directory name.
     """
     boards_dir = ws / 'zephyr' / 'boards'
+    # For "board/soc" naming, use just the board part for directory matching
+    board_dir_name = board.split('/')[0]
     for cfg in sorted(boards_dir.rglob('openocd.cfg')):
-        # The board directory name must appear somewhere in the path parts
-        if board in cfg.parts:
+        if board_dir_name in cfg.parts:
             return str(cfg.relative_to(boards_dir)).replace('\\', '/')
     return None
 
@@ -196,6 +202,8 @@ def main():
         'zephyr.sdkVersion':       sdk_version,
         'zephyr.gdbArch':          gdb_arch,
         'zephyr.svdFile':          svd_file,
+        'C_Cpp.default.compileCommands':
+            f'${{workspaceFolder}}/{compile_dir}/build/compile_commands.json',
     })
     print('  settings.json updated  ✓')
 
