@@ -1,67 +1,41 @@
 {
-    // =========================================================================
-    // Cortex-Debug — single board-independent debug configuration
-    // =========================================================================
-    //
-    // ── How this works ────────────────────────────────────────────────────────
-    //  Every F5 first runs the "debug-prep" preLaunchTask which:
-    //    1. Calls  make _gen-debug-context  (runs .vscode/gen_debug_context.py)
-    //       The script reads COMPILE_DIR and BOARD from the MAKEFILE and writes
-    //       "zephyr.*" keys into settings.json.
-    //    2. Calls  make build  — incremental build of the active app.
-    //
-    //  The launch config then reads those settings via ${config:zephyr.*}.
-    //  Result: changing one COMPILE_DIR line in the Makefile and pressing F5
-    //  automatically builds and debugs the right app on the right board.
-    //
-    // ── To switch app ─────────────────────────────────────────────────────────
-    //  Uncomment the desired  COMPILE_DIR ?= ...  line in the Makefile.
-    //  Press F5.  Done.
-    //
-    // ── To switch board ───────────────────────────────────────────────────────
-    //  Change BOARD in the Makefile.  The script resolves:
-    //    - The board's openocd.cfg path inside zephyr/boards/
-    //    - The GDB toolchain prefix for the CPU architecture
-    //    - The Zephyr SDK version installed at ~/.zephyr_ide/
-    //
-    // ── Per-PC one-time setup ─────────────────────────────────────────────────
-    //  1. Add OpenOCD's bin/ folder to system PATH
-    //     (or set "cortex-debug.openocdPath" in VS Code USER settings)
-    //  2. Install the Zephyr IDE VS Code extension
-    //     (places the Zephyr SDK at ~/.zephyr_ide/ — used for gdbPath below)
-    //
-    // ── openocd_fixup.tcl (DO NOT REMOVE from configFiles) ───────────────────
-    //  Fixes the "Can not find free FPB Comparator" breakpoint error.
-    //  Cortex-Debug opens two GDB connections per session (main + LiveWatch).
-    //  Both trigger gdb-attach; the Zephyr board config forces hard breakpoints
-    //  on every attach, exhausting all 6 FPB comparators.  The fixup:
-    //    - Only halts the CPU on the FIRST connection
-    //    - Uses "gdb_breakpoint_override soft" (patches flash — no FPB used)
-    //    - Only resumes when ALL debuggers disconnect
-    //  The file is board-independent (uses "foreach t [target names]").
-    // =========================================================================
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Active App (from Makefile)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "debug-prep",
+      "executable": "${workspaceFolder}/${config:zephyr.compileDir}/build/zephyr/zephyr.elf",
+      "configFiles": [
+        "${workspaceFolder}/zephyr/boards/${config:zephyr.openocdBoardPath}",
+        "${workspaceFolder}/.vscode/openocd_fixup.tcl"
+      ],
+      "gdbPath": "${userHome}/.zephyr_ide/toolchains/${config:zephyr.sdkVersion}/${config:zephyr.gdbArch}/bin/${config:zephyr.gdbArch}-gdb",
+      "svdFile": "${workspaceFolder}/${config:zephyr.svdFile}",
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "none"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "f:/dev/STM32/STM32F4-zephyr_workspace/applications/LIS302_accel_test/src",
+      "program": "f:/dev/STM32/STM32F4-zephyr_workspace/applications/LIS302_accel_test/src/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
         {
-            "name": "Debug: Active App (from Makefile)",
-            "type": "cortex-debug",
-            "request": "launch",
-            "servertype": "openocd",
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "debug-prep",
-            "executable":    "${workspaceFolder}/${config:zephyr.compileDir}/build/zephyr/zephyr.elf",
-            "configFiles": [
-                "${workspaceFolder}/zephyr/boards/${config:zephyr.openocdBoardPath}",
-                "${workspaceFolder}/.vscode/openocd_fixup.tcl"
-            ],
-            "gdbPath":  "${userHome}/.zephyr_ide/toolchains/${config:zephyr.sdkVersion}/${config:zephyr.gdbArch}/bin/${config:zephyr.gdbArch}-gdb",
-            "svdFile":  "${workspaceFolder}/${config:zephyr.svdFile}",
-            "runToEntryPoint": "main",
-            "showDevDebugOutput": "none",
-            "liveWatch": {
-                "enabled": true,
-                "samplesPerSecond": 4
-            }
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
         }
-    ]
+      ]
+    }
+  ]
 }
