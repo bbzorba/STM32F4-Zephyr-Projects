@@ -11,10 +11,10 @@
 # ============================================================
 
 # --- Select application to build (uncomment one) ---
-#COMPILE_DIR ?= applications/Intr_Btn_LED_Blink_pressed
+COMPILE_DIR ?= applications/Intr_Btn_LED_Blink_pressed
 #COMPILE_DIR ?= applications/Intr_Btn_LED_Blink
 #COMPILE_DIR ?= applications/Threaded_Button_LED_Blink
-COMPILE_DIR ?= applications/LIS302_accel_test
+#COMPILE_DIR ?= applications/LIS302_accel_test
 
 BOARD     ?= stm32f4_disco
 BUILD_DIR ?= $(COMPILE_DIR)/build
@@ -60,7 +60,7 @@ update:
 	$(PYTHON) -m pip install --upgrade west
 	$(PYTHON) -m west update
 
-debug: build
+debug: clean build
 	@echo ""
 	@echo ">>> Build ready. Press F5 in VS Code to start the debug session."
 

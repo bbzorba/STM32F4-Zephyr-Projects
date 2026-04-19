@@ -42,12 +42,34 @@
             }
         },
         {
+            // Clean and rebuild the active app before debug.
+            // This maps directly to the Makefile `debug` target.
+            "label": "debug",
+            "type": "shell",
+            "command": "make debug",
+            "options": { "cwd": "${workspaceFolder}" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": false,
+                "showReuseMessage": false
+            },
+            "problemMatcher": {
+                "owner": "gcc",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5
+                }
+            }
+        },
+        {
             // Sequence run before every F5 debug session:
             //   1. gen-debug-context  — update settings.json from Makefile
-            //   2. build              — incremental build of the active app
+            //   2. debug              — clean + rebuild from Makefile
             "label": "debug-prep",
             "dependsOrder": "sequence",
-            "dependsOn": ["gen-debug-context", "build"],
+            "dependsOn": ["gen-debug-context", "debug"],
             "problemMatcher": []
         }
     ]
