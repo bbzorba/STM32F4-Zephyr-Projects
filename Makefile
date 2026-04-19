@@ -11,10 +11,12 @@
 # ============================================================
 
 # --- Select application to build (uncomment one) ---
-COMPILE_DIR ?= applications/Intr_Btn_LED_Blink_pressed
+#COMPILE_DIR ?= applications/Intr_Btn_LED_Blink_pressed
 #COMPILE_DIR ?= applications/Intr_Btn_LED_Blink
 #COMPILE_DIR ?= applications/Threaded_Button_LED_Blink
 #COMPILE_DIR ?= applications/LIS302_accel_test
+#COMPILE_DIR ?= applications/PX4_Takeoff_and_Land
+COMPILE_DIR ?= applications/PX4_Takeoff_and_Land_simple
 
 BOARD     ?= stm32f4_disco
 BUILD_DIR ?= $(COMPILE_DIR)/build

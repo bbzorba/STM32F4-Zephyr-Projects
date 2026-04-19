@@ -69,5 +69,15 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+
+    // ─── Zephyr debug context (auto-generated — do not edit manually) ─────
+    "zephyr.compileDir": "applications/PX4_Takeoff_and_Land_simple",
+    "zephyr.board": "stm32f4_disco",
+    "zephyr.openocdBoardPath": "st/stm32f4_disco/support/openocd.cfg",
+    "zephyr.sdkVersion": "zephyr-sdk-0.17.3",
+    "zephyr.gdbArch": "arm-zephyr-eabi",
+    "zephyr.svdFile": ".vscode/STM32F407.svd",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/applications/PX4_Takeoff_and_Land_simple/build/compile_commands.json",
+    // ─────────────────────────────────────────────────────────────────────────
 }

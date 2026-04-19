@@ -1,0 +1,23 @@
+/*
+ * Board overlay — PX4_Takeoff_and_Land
+ *
+ * Enables USART3 on PB10 (TX) / PB11 (RX) for MAVLink communication
+ * with the PX4 flight controller TELEM port.
+ *
+ * Physical wiring (STM32F4-Discovery ↔ PX4 TELEM1):
+ *   PB10  →  TELEM_RX   (board pin CN10-25 / Arduino D6 area)
+ *   PB11  →  TELEM_TX   (board pin CN10-26 / Arduino D7 area)
+ *   GND   →  GND
+ *
+ * PX4 side: set parameter SER_TEL1_BAUD = 57600 to match.
+ *
+ * Alternative pins if PB10/PB11 are occupied:
+ *   Replace with <&usart3_tx_pc10 &usart3_rx_pc11> (PC10/PC11).
+ */
+
+&usart3 {
+	pinctrl-0 = <&usart3_tx_pb10 &usart3_rx_pb11>;
+	pinctrl-names = "default";
+	current-speed = <57600>;
+	status = "okay";
+};
