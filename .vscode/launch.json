@@ -1,23 +1,59 @@
 {
-    // Cortex-Debug configurations for STM32F4 Discovery (ST-LINK via OpenOCD)
+    // =========================================================================
+    // Cortex-Debug launch configurations — Zephyr RTOS / OpenOCD
+    // =========================================================================
+    //
+    // ── Why OpenOCD (not J-Link) ──────────────────────────────────────────────
+    //  The STM32F4 Discovery has an onboard ST-LINK V2 probe.  OpenOCD supports
+    //  ST-LINK natively.  J-Link requires a separate SEGGER J-Link probe.
+    //
+    // ── Fixing the "Can not find free FPB Comparator" error ──────────────────
+    //  Zephyr board configs call "gdb_breakpoint_override hard" on gdb-attach,
+    //  forcing all breakpoints to consume FPB hardware comparators (6 on F407).
+    //  Cortex-Debug opens TWO GDB connections (main debug + LiveWatch panel).
+    //  The second connection also triggers gdb-attach + "reset halt", which
+    //  resets the CPU mid-session AND exhausts FPB slots.
+    //
+    //  Fix: openocd_fixup.tcl (second configFiles entry, never changes):
+    //   - Tracks connections: only halts on the first (main) GDB connection.
+    //     LiveWatch attaches silently without resetting the CPU.
+    //   - Uses "gdb_breakpoint_override soft": breakpoints patch flash/RAM
+    //     instructions via the OpenOCD flash driver.  No FPB consumed.
+    //     Unlimited breakpoints in flash.  All 6 FPB free for data watchpoints.
+    //
+    // ── Portable across PCs ───────────────────────────────────────────────────
+    //  ${workspaceFolder}  - workspace root, always portable
+    //  ${userHome}         - OS user home.  Zephyr IDE extension installs the
+    //                        SDK to ~/.zephyr_ide/ on every machine.
+    //  openocd             - found via system PATH. Add OpenOCD's bin/ to PATH
+    //                        once per machine (or set cortex-debug.openocdPath
+    //                        in VS Code USER settings on that machine).
+    //
+    // ── Switching to a different board ────────────────────────────────────────
+    //  Change per debug configuration:
+    //
+    //  1. "name"           - label in the Run & Debug dropdown
+    //  2. "executable"     - path to the .elf (change the app folder name)
+    //  3. "configFiles[0]" - path to the board's openocd.cfg inside zephyr/:
+    //                          zephyr/boards/<vendor>/<board>/support/openocd.cfg
+    //                        Examples:
+    //                          zephyr/boards/st/stm32f4_disco/support/openocd.cfg
+    //                          zephyr/boards/nordic/nrf52dk_nrf52832/support/openocd.cfg
+    //  4. "configFiles[1]" - always "${workspaceFolder}/.vscode/openocd_fixup.tcl"
+    //                        DO NOT CHANGE - board-independent, fixes FPB issue
+    //  5. "gdbPath"        - GDB for the CPU architecture:
+    //                          Cortex-M (STM32, nRF52...): arm-zephyr-eabi-gdb
+    //                          ESP32 (Xtensa): xtensa-espressif_esp32_zephyr-elf-gdb
+    //                          RISC-V: riscv64-zephyr-elf-gdb
+    //                        All at: ~/.zephyr_ide/toolchains/<sdk>/<prefix>/bin/
+    //  6. "svdFile"        - (optional) MCU SVD for peripheral register view
+    //  7. "preLaunchTask"  - must match a task label in tasks.json
     //
     // ── Per-PC one-time setup ─────────────────────────────────────────────────
-    //
-    //  1. Set system environment variable OPENOCD_HOME to your OpenOCD root.
-    //     Windows example:  OPENOCD_HOME = F:\Program_Files\OpenOCD
-    //     Linux example:    OPENOCD_HOME = /usr
-    //     (Restart VS Code after setting it so the variable is picked up.)
-    //
-    //  2. Install the Zephyr IDE VS Code extension once.
-    //     It places the SDK at  ~/.zephyr_ide/  (${userHome} below).
-    //
-    //  No other per-machine configuration is needed.
-    //
-    // ── Path variables used ───────────────────────────────────────────────────
-    //  ${userHome}          → OS user home dir (C:\Users\<name> / /home/<name>)
-    //  ${env:OPENOCD_HOME}  → OpenOCD installation root (set by you, see above)
-    //  ${workspaceFolder}   → workspace root (always portable)
-    // ─────────────────────────────────────────────────────────────────────────
+    //  - Add OpenOCD's bin/ to system PATH  (or set cortex-debug.openocdPath
+    //    in VS Code USER settings)
+    //  - Install the Zephyr IDE VS Code extension (places SDK at ~/.zephyr_ide/)
+    // =========================================================================
     "version": "0.2.0",
     "configurations": [
         {
@@ -29,7 +65,8 @@
             "executable": "${workspaceFolder}/applications/Intr_Btn_LED_Blink/build/zephyr/zephyr.elf",
             "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
             "configFiles": [
-                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg",
+                "${workspaceFolder}/.vscode/openocd_fixup.tcl"
             ],
             "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
             "preLaunchTask": "build: Intr_Btn_LED_Blink",
@@ -49,7 +86,8 @@
             "executable": "${workspaceFolder}/applications/Intr_Btn_LED_Blink_pressed/build/zephyr/zephyr.elf",
             "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
             "configFiles": [
-                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg",
+                "${workspaceFolder}/.vscode/openocd_fixup.tcl"
             ],
             "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
             "preLaunchTask": "build: Intr_Btn_LED_Blink_pressed",
@@ -69,7 +107,8 @@
             "executable": "${workspaceFolder}/applications/Threaded_Button_LED_Blink/build/zephyr/zephyr.elf",
             "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
             "configFiles": [
-                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg",
+                "${workspaceFolder}/.vscode/openocd_fixup.tcl"
             ],
             "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
             "preLaunchTask": "build: Threaded_Button_LED_Blink",
@@ -89,7 +128,8 @@
             "executable": "${workspaceFolder}/applications/LIS302_accel_test/build/zephyr/zephyr.elf",
             "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
             "configFiles": [
-                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg",
+                "${workspaceFolder}/.vscode/openocd_fixup.tcl"
             ],
             "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
             "preLaunchTask": "build: LIS302_accel_test",
