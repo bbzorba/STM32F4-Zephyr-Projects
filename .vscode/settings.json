@@ -1,25 +1,84 @@
 {
-    "cmake.sourceDirectory": "/home/bbzorba/zephyrproject/zephyr",
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/applications/LIS302_accel_test/build/compile_commands.json",
-    "terminal.integrated.env.windows": {
-        "PATH": "C:\\Program Files\\Git\\cmd;${env:PATH}"
-    },
-    "terminal.integrated.defaultProfile.windows": "Zephyr IDE Terminal",
-    "cmake.configureOnOpen": false,
-    "kconfig.zephyr.board": {
-        "F:/dev/STM32/Zephyr_Workspace": "stm32f4_disco"
-    },
+  "terminal.integrated.env.windows": {
+    "PATH": "C:\\Program Files\\Git\\cmd;${env:PATH}"
+  },
+  "terminal.integrated.defaultProfile.windows": "Zephyr IDE Terminal",
+  "cmake.configureOnOpen": false,
+  "kconfig.zephyr.board": {
+    "F:/dev/STM32/Zephyr_Workspace": "stm32f4_disco"
+  },
+  "cortex-debug.enableTelemetry": false,
+  "peripheral-viewer.svdAddrGapThreshold": -1,
+  "zephyr.compileDir": "applications/LIS302_accel_test",
+  "zephyr.board": "stm32f4_disco",
+  "zephyr.openocdBoardPath": "st/stm32f4_disco/support/openocd.cfg",
+  "zephyr.sdkVersion": "zephyr-sdk-0.17.3",
+  "zephyr.gdbArch": "arm-zephyr-eabi",
+  "zephyr.svdFile": ".vscode/STM32F407.svd",
+  "C_Cpp_Runner.cCompilerPath": "gcc",
+  "C_Cpp_Runner.cppCompilerPath": "g++",
+  "C_Cpp_Runner.debuggerPath": "gdb",
+  "C_Cpp_Runner.cStandard": "",
+  "C_Cpp_Runner.cppStandard": "",
+  "C_Cpp_Runner.msvcBatchPath": "C:/Program Files/Microsoft Visual Studio/VR_NR/Community/VC/Auxiliary/Build/vcvarsall.bat",
+  "C_Cpp_Runner.useMsvc": false,
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wformat=2",
+    "-Wcast-align",
+    "-Wconversion",
+    "-Wsign-conversion",
+    "-Wnull-dereference"
+  ],
+  "C_Cpp_Runner.msvcWarnings": [
+    "/W4",
+    "/permissive-",
+    "/w14242",
+    "/w14287",
+    "/w14296",
+    "/w14311",
+    "/w14826",
+    "/w44062",
+    "/w44242",
+    "/w14905",
+    "/w14906",
+    "/w14263",
+    "/w44265",
+    "/w14928"
+  ],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.compilerArgs": [],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.includePaths": [],
+  "C_Cpp_Runner.includeSearch": [
+    "*",
+    "**/*"
+  ],
+  "C_Cpp_Runner.excludeSearch": [
+    "**/build",
+    "**/build/**",
+    "**/.*",
+    "**/.*/**",
+    "**/.vscode",
+    "**/.vscode/**"
+  ],
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp_Runner.useUndefinedSanitizer": false,
+  "C_Cpp_Runner.useLeakSanitizer": false,
+  "C_Cpp_Runner.showCompilationTime": false,
+  "C_Cpp_Runner.useLinkTimeOptimization": false,
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
 
-    // ── Cortex-Debug: OpenOCD ────────────────────────────────────────────────
-    // By default Cortex-Debug searches PATH for "openocd".
-    // On Linux/macOS: sudo apt install openocd  (or brew install openocd)
-    // On Windows: add OpenOCD's bin\ folder to your system PATH once,
-    //   OR set in your VS Code USER settings (overrides this file):
-    //     "cortex-debug.openocdPath": "C:/path/to/openocd/bin/openocd.exe",
-    //     "cortex-debug.openocdSearchDirs": ["C:/path/to/openocd/share/openocd/scripts"],
+    // ─── Zephyr debug context (auto-generated — do not edit manually) ─────
+    "zephyr.compileDir": "applications/LIS302_accel_test",
+    "zephyr.board": "stm32f4_disco",
+    "zephyr.openocdBoardPath": "st/stm32f4_disco/support/openocd.cfg",
+    "zephyr.sdkVersion": "zephyr-sdk-0.17.3",
+    "zephyr.gdbArch": "arm-zephyr-eabi",
+    "zephyr.svdFile": ".vscode/STM32F407.svd",
     // ─────────────────────────────────────────────────────────────────────────
-    "cortex-debug.enableTelemetry": false,
-
-    // ── Peripheral / RTOS viewers (mcu-debug companion extensions) ────────────
-    "peripheral-viewer.svdAddrGapThreshold": -1
 }

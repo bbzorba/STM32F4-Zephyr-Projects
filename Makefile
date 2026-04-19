@@ -30,7 +30,7 @@ endif
 
 # ============================================================
 .DEFAULT_GOAL := build
-.PHONY: help build flash clean build-flash update debug monitor flashmonitor-auto
+.PHONY: help build flash clean build-flash update debug monitor flashmonitor-auto _gen-debug-context
 
 help:
 	@echo Usage: make [build, flash, clean, build-flash, update, debug, monitor, flashmonitor-auto] [COMPILE_DIR=...] [BOARD=...]
@@ -75,3 +75,6 @@ endif
 build-flash: build flash
 
 flashmonitor-auto: build flash monitor
+
+_gen-debug-context:
+	$(PYTHON) .vscode/gen_debug_context.py

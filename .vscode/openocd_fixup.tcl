@@ -50,10 +50,10 @@ foreach t [target names] {
         if {$__dbg_conn == 1} {
             echo "Debugger attaching: halting target (first connection)"
             halt
+            gdb_breakpoint_override soft
         } else {
             echo "Debugger attaching: secondary connection #$__dbg_conn (LiveWatch)"
         }
-        gdb_breakpoint_override soft
     }
 
     $t configure -event gdb-detach {

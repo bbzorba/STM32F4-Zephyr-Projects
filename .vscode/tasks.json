@@ -2,17 +2,35 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build: Intr_Btn_LED_Blink",
+            // Reads COMPILE_DIR + BOARD from the Makefile and writes
+            // "zephyr.*" settings into settings.json so that the single
+            // launch.json debug config always targets the right app/board.
+            "label": "gen-debug-context",
             "type": "shell",
-            "command": "make build COMPILE_DIR=applications/Intr_Btn_LED_Blink",
-            "group": "build",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
+            "command": "make _gen-debug-context",
+            "options": { "cwd": "${workspaceFolder}" },
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
-                "clear": true
+                "clear": true,
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            // Incremental build of the active app.  Runs make build which
+            // uses the COMPILE_DIR/BOARD from the Makefile, --pristine=auto
+            // handles board switches automatically.
+            "label": "build",
+            "type": "shell",
+            "command": "make build",
+            "group": { "kind": "build", "isDefault": true },
+            "options": { "cwd": "${workspaceFolder}" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": false,
+                "showReuseMessage": false
             },
             "problemMatcher": {
                 "owner": "gcc",
@@ -24,70 +42,13 @@
             }
         },
         {
-            "label": "build: Intr_Btn_LED_Blink_pressed",
-            "type": "shell",
-            "command": "make build COMPILE_DIR=applications/Intr_Btn_LED_Blink_pressed",
-            "group": "build",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared",
-                "clear": true
-            },
-            "problemMatcher": {
-                "owner": "gcc",
-                "fileLocation": ["relative", "${workspaceFolder}"],
-                "pattern": {
-                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5
-                }
-            }
-        },
-        {
-            "label": "build: Threaded_Button_LED_Blink",
-            "type": "shell",
-            "command": "make build COMPILE_DIR=applications/Threaded_Button_LED_Blink",
-            "group": "build",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared",
-                "clear": true
-            },
-            "problemMatcher": {
-                "owner": "gcc",
-                "fileLocation": ["relative", "${workspaceFolder}"],
-                "pattern": {
-                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5
-                }
-            }
-        },
-        {
-            "label": "build: LIS302_accel_test",
-            "type": "shell",
-            "command": "make build COMPILE_DIR=applications/LIS302_accel_test",
-            "group": "build",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared",
-                "clear": true
-            },
-            "problemMatcher": {
-                "owner": "gcc",
-                "fileLocation": ["relative", "${workspaceFolder}"],
-                "pattern": {
-                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1, "line": 2, "column": 3, "severity": 4, "message": 5
-                }
-            }
+            // Sequence run before every F5 debug session:
+            //   1. gen-debug-context  — update settings.json from Makefile
+            //   2. build              — incremental build of the active app
+            "label": "debug-prep",
+            "dependsOrder": "sequence",
+            "dependsOn": ["gen-debug-context", "build"],
+            "problemMatcher": []
         }
     ]
 }
