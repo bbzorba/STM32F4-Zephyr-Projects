@@ -8,5 +8,30 @@
     "cmake.configureOnOpen": false,
     "kconfig.zephyr.board": {
         "F:/dev/STM32/Zephyr_Workspace": "stm32f4_disco"
-    }
+    },
+
+    // ── Cortex-Debug: OpenOCD paths ───────────────────────────────────────────
+    // cortex-debug.openocdPath and openocdSearchDirs must point to YOUR OpenOCD
+    // installation. This file contains the current machine's paths.
+    //
+    // !! On a different PC (e.g. work machine) add these two lines to your
+    //    VS Code USER settings  (File → Preferences → User Settings → JSON):
+    //
+    //   "cortex-debug.openocdPath": "/path/to/openocd/bin/openocd",
+    //   "cortex-debug.openocdSearchDirs": ["/path/to/openocd/share/openocd/scripts"],
+    //
+    //    User settings override workspace settings, so the workspace file
+    //    does not need to change per machine.
+    // ─────────────────────────────────────────────────────────────────────────
+    "cortex-debug.openocdPath": "F:/Program_Files/OpenOCD/bin/openocd.exe",
+    "cortex-debug.openocdSearchDirs": [
+        "F:/Program_Files/OpenOCD/share/openocd/scripts"
+    ],
+
+    // GDB is always installed by the Zephyr IDE extension to the same
+    // ${userHome}/.zephyr_ide/ path — no per-machine override needed.
+    "cortex-debug.enableTelemetry": false,
+
+    // ── Peripheral / RTOS viewers (mcu-debug companion extensions) ────────────
+    "peripheral-viewer.svdAddrGapThreshold": -1
 }

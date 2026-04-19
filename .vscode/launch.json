@@ -1,0 +1,104 @@
+{
+    // Cortex-Debug configurations for STM32F4 Discovery (ST-LINK via OpenOCD)
+    //
+    // ── Per-PC one-time setup ─────────────────────────────────────────────────
+    //
+    //  1. Set system environment variable OPENOCD_HOME to your OpenOCD root.
+    //     Windows example:  OPENOCD_HOME = F:\Program_Files\OpenOCD
+    //     Linux example:    OPENOCD_HOME = /usr
+    //     (Restart VS Code after setting it so the variable is picked up.)
+    //
+    //  2. Install the Zephyr IDE VS Code extension once.
+    //     It places the SDK at  ~/.zephyr_ide/  (${userHome} below).
+    //
+    //  No other per-machine configuration is needed.
+    //
+    // ── Path variables used ───────────────────────────────────────────────────
+    //  ${userHome}          → OS user home dir (C:\Users\<name> / /home/<name>)
+    //  ${env:OPENOCD_HOME}  → OpenOCD installation root (set by you, see above)
+    //  ${workspaceFolder}   → workspace root (always portable)
+    // ─────────────────────────────────────────────────────────────────────────
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: Intr_Btn_LED_Blink",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/applications/Intr_Btn_LED_Blink/build/zephyr/zephyr.elf",
+            "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "configFiles": [
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
+            "preLaunchTask": "build: Intr_Btn_LED_Blink",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
+        },
+        {
+            "name": "Debug: Intr_Btn_LED_Blink_pressed",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/applications/Intr_Btn_LED_Blink_pressed/build/zephyr/zephyr.elf",
+            "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "configFiles": [
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
+            "preLaunchTask": "build: Intr_Btn_LED_Blink_pressed",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
+        },
+        {
+            "name": "Debug: Threaded_Button_LED_Blink",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/applications/Threaded_Button_LED_Blink/build/zephyr/zephyr.elf",
+            "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "configFiles": [
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
+            "preLaunchTask": "build: Threaded_Button_LED_Blink",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
+        },
+        {
+            "name": "Debug: LIS302_accel_test",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/applications/LIS302_accel_test/build/zephyr/zephyr.elf",
+            "gdbPath": "${userHome}/.zephyr_ide/toolchains/zephyr-sdk-0.17.3/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "configFiles": [
+                "${workspaceFolder}/zephyr/boards/st/stm32f4_disco/support/openocd.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/.vscode/STM32F407.svd",
+            "preLaunchTask": "build: LIS302_accel_test",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
+        }
+    ]
+}
