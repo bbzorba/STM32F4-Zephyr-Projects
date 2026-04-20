@@ -34,7 +34,7 @@ endif
 
 # ============================================================
 .DEFAULT_GOAL := build
-.PHONY: help setup build flash clean build-flash update debug monitor flashmonitor-auto _gen-debug-context
+.PHONY: help setup prebuild-clean-stale build flash clean build-flash update debug monitor flashmonitor-auto _gen-debug-context
 
 help:
 	@echo Usage: make [setup, build, flash, clean, build-flash, update, debug, monitor, flashmonitor-auto] [COMPILE_DIR=...] [BOARD=...]
@@ -62,19 +62,17 @@ $(VENV_MARKER):
 
 setup: $(VENV_MARKER)
 
-build: $(VENV_MARKER)
+prebuild-clean-stale: $(VENV_MARKER)
+	$(PYTHON) tools/prepare_build_dir.py --build-dir "$(BUILD_DIR)" --source-dir "$(COMPILE_DIR)"
+
+build: $(VENV_MARKER) prebuild-clean-stale
 	$(PYTHON) -m west build -b $(BOARD) $(COMPILE_DIR) -d $(BUILD_DIR) --pristine=auto
 
 flash:
 	$(PYTHON) -m west flash -d $(BUILD_DIR)
 
 clean:
-ifeq ($(OS),Windows_NT)
-	-@rmdir /s /q "$(subst /,\,$(BUILD_DIR))" 2>nul
-else
-	rm -rf "$(BUILD_DIR)"
-endif
-	@echo Cleaned: $(BUILD_DIR)
+	$(PYTHON) tools/clean_build_dir.py --build-dir "$(BUILD_DIR)"
 
 update:
 	$(PYTHON) -m pip install --upgrade pip

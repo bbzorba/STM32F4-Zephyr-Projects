@@ -16,7 +16,7 @@
       "gdbPath": "${userHome}/.zephyr_ide/toolchains/${config:zephyr.sdkVersion}/${config:zephyr.gdbArch}/bin/${config:zephyr.gdbArch}-gdb",
       "svdFile": "${workspaceFolder}/${config:zephyr.svdFile}",
       "runToEntryPoint": "main",
-      "showDevDebugOutput": "none"
+      "showDevDebugOutput": "raw"
     },
     {
       "name": "C/C++ Runner: Debug Session",
@@ -25,8 +25,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "f:/dev/STM32/STM32F4-zephyr_workspace/applications/LIS302_accel_test/src",
-      "program": "f:/dev/STM32/STM32F4-zephyr_workspace/applications/LIS302_accel_test/src/build/Debug/outDebug",
+      "cwd": "${workspaceFolder}/applications/LIS302_accel_test/src",
+      "program": "${workspaceFolder}/applications/LIS302_accel_test/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
