@@ -26,16 +26,19 @@ PORT      ?=
 # Python from the workspace virtual environment (platform-detected)
 ifeq ($(OS),Windows_NT)
     PYTHON := .venv/Scripts/python.exe
+    VENV_MARKER := .venv/Scripts/python.exe
 else
     PYTHON := .venv/bin/python
+    VENV_MARKER := .venv/bin/python
 endif
 
 # ============================================================
 .DEFAULT_GOAL := build
-.PHONY: help build flash clean build-flash update debug monitor flashmonitor-auto _gen-debug-context
+.PHONY: help setup build flash clean build-flash update debug monitor flashmonitor-auto _gen-debug-context
 
 help:
-	@echo Usage: make [build, flash, clean, build-flash, update, debug, monitor, flashmonitor-auto] [COMPILE_DIR=...] [BOARD=...]
+	@echo Usage: make [setup, build, flash, clean, build-flash, update, debug, monitor, flashmonitor-auto] [COMPILE_DIR=...] [BOARD=...]
+	@echo   setup       - Create virtual environment and install dependencies
 	@echo   build       - Build the selected application
 	@echo   flash       - Flash to STM32F4 Discovery board
 	@echo   clean       - Remove build directory
@@ -48,14 +51,30 @@ help:
 	@echo COMPILE_DIR=$(COMPILE_DIR)
 	@echo BOARD=$(BOARD)
 
-build:
+# Bootstrap: create venv, install west, init workspace, fetch zephyr, install deps
+$(VENV_MARKER):
+	python -m venv .venv
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install west
+	-$(PYTHON) -m west init -l manifest-local
+	$(PYTHON) -m west update
+	$(PYTHON) -m pip install -r requirements.txt
+
+setup: $(VENV_MARKER)
+
+build: $(VENV_MARKER)
 	$(PYTHON) -m west build -b $(BOARD) $(COMPILE_DIR) -d $(BUILD_DIR) --pristine=auto
 
 flash:
 	$(PYTHON) -m west flash -d $(BUILD_DIR)
 
 clean:
-	$(PYTHON) -c "import shutil; shutil.rmtree('$(BUILD_DIR)', ignore_errors=True); print('Cleaned: $(BUILD_DIR)')"
+ifeq ($(OS),Windows_NT)
+	-@rmdir /s /q "$(subst /,\,$(BUILD_DIR))" 2>nul
+else
+	rm -rf "$(BUILD_DIR)"
+endif
+	@echo Cleaned: $(BUILD_DIR)
 
 update:
 	$(PYTHON) -m pip install --upgrade pip
